@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embers Credit Union - System Object Mapping</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #f8f9fa;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        }
+        
+        h1 {
+            color: #733bf6;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .diagram {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .system-column {
+            flex: 1;
+            max-width: 350px;
+        }
+        
+        .system-header {
+            background: linear-gradient(135deg, #733bf6 0%, #5a2bc7 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(115, 59, 246, 0.3);
+        }
+        
+        .objects-container {
+            border: 2px solid #733bf6;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 20px;
+            background: #fafbff;
+        }
+        
+        .object-box {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .object-box:hover {
+            border-color: #733bf6;
+            box-shadow: 0 2px 12px rgba(115, 59, 246, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .object-box:last-child {
+            margin-bottom: 0;
+        }
+        
+        .object-name {
+            font-weight: 700;
+            color: #333;
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+        
+        .object-type {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+        
+        .object-key {
+            font-size: 11px;
+            color: #733bf6;
+            font-weight: 600;
+            background: #f3f0ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        
+        .connector {
+            flex: 0 0 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-top: 60px;
+        }
+        
+        .arrow {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #733bf6 0%, #9b6fff 100%);
+            position: relative;
+        }
+        
+        .arrow::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: -6px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid #9b6fff;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+        
+        .arrow-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #733bf6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .flow-label {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .legend {
+            margin-top: 50px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #733bf6;
+        }
+        
+        .legend-title {
+            font-weight: 700;
+            color: #733bf6;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .legend-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .icon-purple {
+            background: #733bf6;
+        }
+        
+        .icon-gray {
+            background: #e0e0e0;
+            border: 2px solid #999;
+        }
+        
+        .special-note {
+            background: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin-top: 30px;
+            border-radius: 4px;
+        }
+        
+        .special-note-title {
+            font-weight: 700;
+            color: #f57c00;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .special-note-text {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .section-divider {
+            margin: 50px 0;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .data-flow-section {
+            margin-top: 50px;
+        }
+        
+        .flow-title {
+            color: #733bf6;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 20px;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            
+            .object-box:hover {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Embers Credit Union</h1>
+        <div class="subtitle">System Object Mapping Diagram</div>
+        
+        <!-- FLOW 1: SYMXCHANGE → HUBSPOT -->
+        <div class="data-flow-section">
+            <div class="flow-title">Flow 1: SymXchange → HubSpot (Daily Batch)</div>
+            
+            <div class="diagram">
+                <!-- SYMXCHANGE COLUMN -->
+                <div class="system-column">
+                    <div class="system-header">Symitar Core (SymXchange)</div>
+                    <div class="objects-container">
+                        <div class="object-box">
+                            <div class="object-name">Name Records</div>
+                            <div class="object-type">Member demographics</div>
+                            <div class="object-key">🔑 Account.AccountNumber</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Share Records</div>
+                            <div class="object-type">Deposit accounts (checking, savings)</div>
+                            <div class="object-key">🔑 Share.Id</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Loan Records</div>
+                            <div class="object-type">Loans, mortgages, credit cards</div>
+                            <div class="object-key">🔑 Loan.Id</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Loan Records (Credit Cards)</div>
+                            <div class="object-type">Credit card accounts</div>
+                            <div class="object-key">🔑 Loan.Id (filtered by CC type)</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Share Records (CD)</div>
+                            <div class="object-type">Certificates of Deposit</div>
+                            <div class="object-key">🔑 Share.Id (filtered by CD type)</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Name Records (Business)</div>
+                            <div class="object-type">Commercial/business accounts</div>
+                            <div class="object-key">🔑 Account.AccountNumber</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CONNECTOR -->
+                <div class="connector">
+                    <div>
+                        <div class="arrow">
+                            <div class="arrow-label">Daily Sync</div>
+                        </div>
+                        <div class="flow-label">SOAP API</div>
+                    </div>
+                </div>
+                
+                <!-- HUBSPOT COLUMN -->
+                <div class="system-column">
+                    <div class="system-header">HubSpot CRM</div>
+                    <div class="objects-container">
+                        <div class="object-box">
+                            <div class="object-name">Contacts</div>
+                            <div class="object-type">Standard object</div>
+                            <div class="object-key">🔑 symxchange_account_number</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Deposit Accounts</div>
+                            <div class="object-type">Custom object</div>
+                            <div class="object-key">🔑 share_id</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Loans</div>
+                            <div class="object-type">Custom object</div>
+                            <div class="object-key">🔑 core_loan_id</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Credit Cards</div>
+                            <div class="object-type">Custom object</div>
+                            <div class="object-key">🔑 cc_loan_id</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Certificates</div>
+                            <div class="object-type">Custom object</div>
+                            <div class="object-key">🔑 certificate_id</div>
+                        </div>
+                        
+                        <div class="object-box">
+                            <div class="object-name">Companies</div>
+                            <div class="object-type">Standard object</div>
+                            <div class="object-key">🔑 business_core_id</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        
+        <!-- FLOW 2: MANTL → HUBSPOT -->
+        <div class="data-flow-section">
+            <div class="flow-title">Flow 2: MANTL → HubSpot (Real-Time Webhooks)</div>
+            
+            <div class="diagram">
+                <!-- MANTL COLUMN -->
+                <div class="system-column">
+                    <div class="system-header">MANTL Platform</div>
+                    <div class="objects-container">
+                        <div class="object-box">
+                            <div class="object-name">Application</div>
+                            <div class="object-type">Digital account applications</div>
+                            <div class="object-key">🔑 application.id</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CONNECTOR -->
+                <div class="connector">
+                    <div>
+                        <div class="arrow">
+                            <div class="arrow-label">Webhook</div>
+                        </div>
+                        <div class="flow-label">REST API</div>
+                    </div>
+                </div>
+                
+                <!-- HUBSPOT COLUMN -->
+                <div class="system-column">
+                    <div class="system-header">HubSpot CRM</div>
+                    <div class="objects-container">
+                        <div class="object-box">
+                            <div class="object-name">Deals</div>
+                            <div class="object-type">Standard object (MANTL Applications pipeline)</div>
+                            <div class="object-key">🔑 mantl_application_id</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SPECIAL NOTES -->
+        <div class="special-note" style="background: #e3f2fd; border-left-color: #2196f3;">
+            <div class="special-note-title" style="color: #1565c0;">💳 Credit Cards as Separate Object</div>
+            <div class="special-note-text">
+                While credit cards are stored as Loan records in Symitar (Loan.Type = credit card), they will be synced to a 
+                <strong>separate Credit Cards custom object in HubSpot</strong> for better reporting and segmentation. 
+                This enables tracking of credit-card-specific fields like <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">cc_credit_limit</code>, 
+                <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">cc_utilization_pct</code>, and 
+                <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">cc_last_transaction_date</code>.
+            </div>
+        </div>
+        
+        <div class="special-note">
+            <div class="special-note-title">⚠️ Important: MANTL Data Limitations</div>
+            <div class="special-note-text">
+                MANTL's API provides minimal application data (applicationId, product, status only). 
+                <strong>Applicant personal information (name, email, phone, address) is NOT available via MANTL API.</strong>
+                Full applicant details are populated from SymXchange after the application is booked to Symitar core.
+            </div>
+        </div>
+        
+        <div class="special-note" style="background: #e8f5e9; border-left-color: #4caf50;">
+            <div class="special-note-title" style="color: #2e7d32;">✓ Backfill Matching Process</div>
+            <div class="special-note-text">
+                Daily SymXchange sync matches newly opened accounts to existing MANTL Deals by:
+                <strong>product type + open date + member name</strong>. 
+                When matched, the Deal is updated with <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">core_account_number</code> 
+                and associated with the Contact.
+            </div>
+        </div>
+        
+        <!-- LEGEND -->
+        <div class="legend">
+            <div class="legend-title">Legend & Object Associations</div>
+            
+            <div class="legend-item">
+                <div class="legend-icon icon-purple"></div>
+                <div>
+                    <strong>Primary Key (🔑):</strong> Unique identifier used to sync and match records between systems
+                </div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-icon icon-gray"></div>
+                <div>
+                    <strong>Standard Object:</strong> Built-in HubSpot object (Contacts, Companies, Deals)
+                </div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-icon" style="background: linear-gradient(135deg, #733bf6 0%, #9b6fff 100%);"></div>
+                <div>
+                    <strong>Custom Object:</strong> Created specifically for Embers integration (Deposit Accounts, Loans, Certificates)
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd;">
+                <strong style="color: #733bf6;">HubSpot Associations:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px; line-height: 1.8; color: #666;">
+                    <li><strong>Contact</strong> → Deposit Accounts (one-to-many)</li>
+                    <li><strong>Contact</strong> → Loans (one-to-many)</li>
+                    <li><strong>Contact</strong> → Credit Cards (one-to-many)</li>
+                    <li><strong>Contact</strong> → Certificates (one-to-many)</li>
+                    <li><strong>Contact</strong> ← Deals (many-to-many, backfilled)</li>
+                    <li><strong>Company</strong> → Deposit Accounts (one-to-many)</li>
+                    <li><strong>Company</strong> → Loans (one-to-many)</li>
+                    <li><strong>Company</strong> → Credit Cards (one-to-many)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="margin-top: 40px; padding: 20px; background: #f3f0ff; border-radius: 8px; text-align: center; color: #733bf6; font-weight: 600;">
+            Prepared by New Breed for Embers Credit Union • 2026
+        </div>
+    </div>
+    
+    <script>
+        // Print functionality
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>
